@@ -1,10 +1,12 @@
-.gallery {
+.gallery,
+.cards__list {
   display: grid;
-  justify-content: center;
   grid-template-columns: repeat(3, 282px);
-  grid-template-rows: repeat(2, 361px);
-  gap: 20px;
-  padding: 20px;
+  gap: 17px;
+  padding: 0;
+  list-style: none;
+  max-width: 880px;
+  margin: 50px auto 0 auto;
 }
 
 .card {
@@ -27,7 +29,8 @@
   aspect-ratio: 1;
 }
 
-.card__content {
+.card__content,
+.card__description {
   max-width: 246px;
   width: 100%;
   display: flex;
@@ -66,7 +69,8 @@
   opacity: 0.6;
 }
 
-.card__like-button_active {
+.card__like-button_active,
+.card__like-button_is-active {
   background-image: url("../images/favoriteblack.png");
 }
 
@@ -94,7 +98,7 @@
 }
 
 .card__delete-button:hover {
-  background-color: rgba(255, 251, 251, 0.57); 
+  background-color: rgba(255, 251, 251, 0.57);
 }
 
 /* Responsive cards */

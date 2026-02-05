@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from "react";
-import CurrentUserContext from "../../../../../contexts/CurrentUserContext";
+import CurrentUserContext from "../../../../../../../contexts/CurrentUserContext";
 
 export default function EditProfile() {
   // Obtener datos y función del contexto
@@ -73,7 +73,7 @@ export default function EditProfile() {
         />
         <span className="popup__error" id="about-error"></span>
       </label>
-      <button className="button popup__button" type="submit">
+      <button className="popup__button" type="submit">
         Guardar
       </button>
     </form>

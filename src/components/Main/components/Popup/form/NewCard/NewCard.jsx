@@ -1,5 +1,5 @@
 import { useState, useContext } from "react";
-import CurrentUserContext from "../../../../contexts/CurrentUserContext";
+import CurrentUserContext from "../../../../../../contexts/CurrentUserContext";
 
 export default function NewCard() {
   // Obtener la función del contexto
@@ -63,8 +63,8 @@ export default function NewCard() {
         />
         <span className="popup__error" id="card-link-error"></span>
       </label>
-      <button className="button popup__button" type="submit">
-        Guardar
+      <button className="popup__button popup__button_create" type="submit">
+        Crear
       </button>
     </form>
   );

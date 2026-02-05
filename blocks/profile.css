@@ -23,25 +23,29 @@
 
 .profile__info {
   padding: 0;
-  width: 415px;
+  max-width: 415px;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  justify-content: center;
+  flex-grow: 1;
+}
+
+.profile__name-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .profile__name {
-  max-width: 430px;
-  height: 45px;
+  max-width: 350px;
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
-  display: inline-block;
   font-size: 42px;
   font-weight: 500;
   line-height: 48px;
-  text-align: left;
   color: #ffffff;
-  margin: 62px auto 16px 0;
+  margin: 0;
 }
 
 .profile__details {
@@ -132,6 +136,64 @@
 
 .profile__avatar-container:hover .profile__avatar-edit {
   opacity: 1;
+}
+
+/* Profile image container (for avatar) */
+.profile__image-container {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  margin: 40px 30px 50px 0;
+  flex-shrink: 0;
+}
+
+/* Profile edit button (pencil icon) */
+.profile__edit-button {
+  width: 24px;
+  height: 24px;
+  border: 1px solid white;
+  background-color: transparent;
+  background-image: url("../images/pen-button.png");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 10px 10px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.profile__edit-button:hover {
+  opacity: 0.6;
+}
+
+/* Profile add button (+ sign) */
+.profile__add-button {
+  width: 150px;
+  height: 50px;
+  background-color: transparent;
+  border: 2px solid white;
+  margin: auto 0 auto auto;
+  cursor: pointer;
+  background-image: url("../images/add.png");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 22px 22px;
+  flex-shrink: 0;
+}
+
+.profile__add-button:hover {
+  opacity: 0.6;
+}
+
+/* Profile about text */
+.profile__about {
+  max-width: 415px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  font-size: 18px;
+  line-height: 22px;
+  color: #ffffff;
+  margin: 16px 0 0 0;
 }
 
 /* Responsive profile */

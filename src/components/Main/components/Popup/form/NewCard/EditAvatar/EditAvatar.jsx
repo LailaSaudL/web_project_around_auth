@@ -1,5 +1,5 @@
 import { useRef, useContext } from "react";
-import CurrentUserContext from "../../../../../contexts/CurrentUserContext";
+import CurrentUserContext from "../../../../../../../contexts/CurrentUserContext";
 
 export default function EditAvatar() {
   // Obtener la función del contexto
@@ -36,7 +36,7 @@ export default function EditAvatar() {
         />
         <span className="popup__error" id="avatar-url-error"></span>
       </label>
-      <button className="button popup__button" type="submit">
+      <button className="popup__button" type="submit">
         Guardar
       </button>
     </form>

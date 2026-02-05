@@ -1,10 +1,16 @@
 // /src/components/App.jsx
 
 import { useEffect, useState } from "react";
+import { Routes, Route, useNavigate } from "react-router-dom";
 import Header from "./Header/Header";
 import Main from "./Main/Main";
 import Footer from "./Footer/Footer";
+import Login from "./Login/Login";
+import Register from "./Register/Register";
+import ProtectedRoute from "./ProtectedRoute/ProtectedRoute";
+import InfoTooltip from "./InfoTooltip/InfoTooltip";
 import api from "../utils/api";
+import * as auth from "../utils/auth";
 import CurrentUserContext from "../contexts/CurrentUserContext";
 
 function App() {
@@ -13,20 +19,117 @@ function App() {
   const [cards, setCards] = useState([]);
   const [popup, setPopup] = useState(null);
 
-  // Cargar datos iniciales al montar el componente
-  useEffect(() => {
-    api.getUserInfo()
-      .then((userData) => {
-        setCurrentUser(userData);
-      })
-      .catch((error) => console.error("Error al obtener usuario:", error));
+  // Auth states
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userEmail, setUserEmail] = useState("");
 
-    api.getInitialCards()
-      .then((cardsData) => {
-        setCards(cardsData);
-      })
-      .catch((error) => console.error("Error al obtener tarjetas:", error));
+  // InfoTooltip states
+  const [isInfoTooltipOpen, setIsInfoTooltipOpen] = useState(false);
+  const [isRegistrationSuccess, setIsRegistrationSuccess] = useState(false);
+
+  // Error state for debugging
+  const [apiError, setApiError] = useState(null);
+
+  // Hook for navigation/redirect
+  const navigate = useNavigate();
+
+  // Check token on mount (persistent login)
+  useEffect(() => {
+    const token = localStorage.getItem("jwt");
+    if (token) {
+      auth
+        .checkToken(token)
+        .then((res) => {
+          // Response format: { data: { email, _id } }
+          setIsLoggedIn(true);
+          setUserEmail(res.data.email);
+          navigate("/");
+        })
+        .catch((error) => {
+          console.error("Token validation failed:", error);
+          localStorage.removeItem("jwt");
+        });
+    }
   }, []);
+
+  // Load user data and cards when logged in
+  useEffect(() => {
+    if (isLoggedIn) {
+      setApiError(null);
+
+      api
+        .getUserInfo()
+        .then((userData) => {
+          console.log("User data received:", userData);
+          setCurrentUser(userData);
+        })
+        .catch((error) => {
+          console.error("Error al obtener usuario:", error);
+          setApiError(`Error loading user: ${error}`);
+        });
+
+      api
+        .getInitialCards()
+        .then((cardsData) => {
+          console.log("Cards received:", cardsData);
+          setCards(cardsData);
+        })
+        .catch((error) => {
+          console.error("Error al obtener tarjetas:", error);
+          setApiError(`Error loading cards: ${error}`);
+        });
+    }
+  }, [isLoggedIn]);
+
+  // Handle login
+  function handleLogin(email, password) {
+    auth
+      .login(email, password)
+      .then((data) => {
+        if (data.token) {
+          localStorage.setItem("jwt", data.token);
+          setIsLoggedIn(true);
+          setUserEmail(email);
+          navigate("/");
+        }
+      })
+      .catch((error) => {
+        console.error("Login error:", error);
+        setIsRegistrationSuccess(false);
+        setIsInfoTooltipOpen(true);
+      });
+  }
+
+  // Handle registration
+  function handleRegister(email, password) {
+    auth
+      .register(email, password)
+      .then(() => {
+        setIsRegistrationSuccess(true);
+        setIsInfoTooltipOpen(true);
+        navigate("/signin");
+      })
+      .catch((error) => {
+        console.error("Registration error:", error);
+        setIsRegistrationSuccess(false);
+        setIsInfoTooltipOpen(true);
+      });
+  }
+
+  // Handle logout
+  function handleLogout() {
+    localStorage.removeItem("jwt");
+    setIsLoggedIn(false);
+    setUserEmail("");
+    setCurrentUser({});
+    setCards([]);
+    navigate("/signin");
+  }
+
+  // Close InfoTooltip
+  function closeInfoTooltip() {
+    setIsInfoTooltipOpen(false);
+  }
 
   function handleOpenPopup(popupData) {
     setPopup(popupData);
@@ -37,7 +140,8 @@ function App() {
   }
 
   function handleUpdateUser(data) {
-    api.setUserInfo(data)
+    api
+      .setUserInfo(data)
       .then((newUserData) => {
         setCurrentUser(newUserData);
         handleClosePopup();
@@ -46,7 +150,8 @@ function App() {
   }
 
   function handleUpdateAvatar(data) {
-    api.setUserAvatar(data)
+    api
+      .setUserAvatar(data)
       .then((newUserData) => {
         setCurrentUser(newUserData);
         handleClosePopup();
@@ -54,9 +159,10 @@ function App() {
       .catch((error) => console.error("Error al actualizar avatar:", error));
   }
 
-  async function handleCardLike(card) {
+  function handleCardLike(card) {
     const isLiked = card.isLiked;
-    api.changeLikeCardStatus(card._id, !isLiked)
+    api
+      .changeLikeCardStatus(card._id, !isLiked)
       .then((newCard) => {
         setCards((state) =>
           state.map((currentCard) =>
@@ -68,7 +174,8 @@ function App() {
   }
 
   function handleCardDelete(card) {
-    api.deleteCard(card._id)
+    api
+      .deleteCard(card._id)
       .then(() => {
         setCards((state) =>
           state.filter((currentCard) => currentCard._id !== card._id)
@@ -78,7 +185,8 @@ function App() {
   }
 
   function handleAddPlaceSubmit(data) {
-    api.addCard(data)
+    api
+      .addCard(data)
       .then((newCard) => {
         setCards([newCard, ...cards]);
         handleClosePopup();
@@ -96,16 +204,56 @@ function App() {
       }}
     >
       <div className="page__content">
-        <Header />
-        <Main
-          cards={cards}
-          popup={popup}
-          onOpenPopup={handleOpenPopup}
-          onClosePopup={handleClosePopup}
-          onCardLike={handleCardLike}
-          onCardDelete={handleCardDelete}
+        <Header
+          isLoggedIn={isLoggedIn}
+          userEmail={userEmail}
+          onLogout={handleLogout}
         />
+
+        {/* Debug: Show API errors */}
+        {apiError && (
+          <div style={{ background: "red", color: "white", padding: "10px", textAlign: "center" }}>
+            {apiError}
+          </div>
+        )}
+
+        {/* Routes configuration */}
+        <Routes>
+          {/* Public route: Login page */}
+          <Route path="/signin" element={<Login onLogin={handleLogin} />} />
+
+          {/* Public route: Register page */}
+          <Route
+            path="/signup"
+            element={<Register onRegister={handleRegister} />}
+          />
+
+          {/* Protected route: Main application (only for logged-in users) */}
+          <Route
+            path="/"
+            element={
+              <ProtectedRoute isLoggedIn={isLoggedIn}>
+                <Main
+                  cards={cards}
+                  popup={popup}
+                  onOpenPopup={handleOpenPopup}
+                  onClosePopup={handleClosePopup}
+                  onCardLike={handleCardLike}
+                  onCardDelete={handleCardDelete}
+                />
+              </ProtectedRoute>
+            }
+          />
+        </Routes>
+
         <Footer />
+
+        {/* InfoTooltip for registration success/error */}
+        <InfoTooltip
+          isOpen={isInfoTooltipOpen}
+          onClose={closeInfoTooltip}
+          isSuccess={isRegistrationSuccess}
+        />
       </div>
     </CurrentUserContext.Provider>
   );

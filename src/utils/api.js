@@ -1,7 +1,14 @@
+// src/utils/api.js
+// API class for main application functionality (users, cards)
+
 class Api {
   constructor({ baseUrl, headers }) {
     this._baseUrl = baseUrl;
     this._headers = headers;
+  }
+
+  _getHeaders() {
+    return this._headers;
   }
 
   _checkRes(res) {
@@ -12,14 +19,14 @@ class Api {
   // Obtener información del usuario
   getUserInfo() {
     return fetch(`${this._baseUrl}/users/me`, {
-      headers: this._headers,
+      headers: this._getHeaders(),
     }).then(this._checkRes);
   }
 
   // Obtener tarjetas
   getInitialCards() {
     return fetch(`${this._baseUrl}/cards`, {
-      headers: this._headers,
+      headers: this._getHeaders(),
     }).then(this._checkRes);
   }
 
@@ -27,7 +34,7 @@ class Api {
   setUserInfo({ name, about }) {
     return fetch(`${this._baseUrl}/users/me`, {
       method: "PATCH",
-      headers: this._headers,
+      headers: this._getHeaders(),
       body: JSON.stringify({ name, about }),
     }).then(this._checkRes);
   }
@@ -36,7 +43,7 @@ class Api {
   addCard({ name, link }) {
     return fetch(`${this._baseUrl}/cards`, {
       method: "POST",
-      headers: this._headers,
+      headers: this._getHeaders(),
       body: JSON.stringify({ name, link }),
     }).then(this._checkRes);
   }
@@ -45,7 +52,7 @@ class Api {
   deleteCard(cardId) {
     return fetch(`${this._baseUrl}/cards/${cardId}`, {
       method: "DELETE",
-      headers: this._headers,
+      headers: this._getHeaders(),
     }).then(this._checkRes);
   }
 
@@ -53,7 +60,7 @@ class Api {
   changeLikeCardStatus(cardId, isLiked) {
     return fetch(`${this._baseUrl}/cards/${cardId}/likes`, {
       method: isLiked ? "PUT" : "DELETE",
-      headers: this._headers,
+      headers: this._getHeaders(),
     }).then(this._checkRes);
   }
 
@@ -61,13 +68,13 @@ class Api {
   setUserAvatar({ avatar }) {
     return fetch(`${this._baseUrl}/users/me/avatar`, {
       method: "PATCH",
-      headers: this._headers,
+      headers: this._getHeaders(),
       body: JSON.stringify({ avatar }),
     }).then(this._checkRes);
   }
 }
 
-// Exportamos la instancia (no la clase)
+// Export the API instance with cohort token
 const api = new Api({
   baseUrl: "https://around-api.es.tripleten-services.com/v1",
   headers: {
