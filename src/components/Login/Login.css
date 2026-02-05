@@ -1,0 +1,79 @@
+/* src/components/Login/Login.css */
+/* Styles for authentication pages (Login and Register) */
+
+.auth {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 60px 0;
+  max-width: 358px;
+  margin: 0 auto;
+}
+
+.auth__title {
+  font-family: "Inter", Arial, sans-serif;
+  font-weight: 900;
+  font-size: 24px;
+  line-height: 1.2;
+  color: #fff;
+  margin: 0 0 50px;
+}
+
+.auth__form {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.auth__input {
+  background-color: transparent;
+  border: none;
+  border-bottom: 2px solid #ccc;
+  padding: 12px 0;
+  margin-bottom: 30px;
+  font-family: "Inter", Arial, sans-serif;
+  font-size: 14px;
+  color: #fff;
+  outline: none;
+}
+
+.auth__input::placeholder {
+  color: #ccc;
+}
+
+.auth__input:focus {
+  border-bottom-color: #fff;
+}
+
+.auth__button {
+  background-color: #fff;
+  border: none;
+  border-radius: 2px;
+  padding: 18px;
+  font-family: "Inter", Arial, sans-serif;
+  font-size: 18px;
+  font-weight: 400;
+  color: #000;
+  cursor: pointer;
+  transition: opacity 0.3s ease;
+}
+
+.auth__button:hover {
+  opacity: 0.85;
+}
+
+.auth__text {
+  font-family: "Inter", Arial, sans-serif;
+  font-size: 14px;
+  color: #fff;
+  margin-top: 20px;
+}
+
+.auth__link {
+  color: #fff;
+  text-decoration: underline;
+}
+
+.auth__link:hover {
+  opacity: 0.6;
+}
