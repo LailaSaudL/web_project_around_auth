@@ -2,7 +2,7 @@
 
 This project includes the implementation of registration and autorization in the frontend of a website.
 
-- ´´/signin´´ and ´´/signup´´ method for users to the website.
+- `/signin` and `/signup` method for users to the website.
 - Login, signup, ProtectedRoute and InfoTooltip.
 - API requests related to the signup and authorization within /utils.
 - Linking the Express backend.
